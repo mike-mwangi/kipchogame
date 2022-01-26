@@ -90,21 +90,13 @@ int level = 0;
 //Track Score
 int score = 0;
 
-//Form move track
-int roadDivTopMost = 0;
-int roadDivTop = 0;
-int roadDivMdl = 0;
-int roadDivBtm = 0;
 
 //For Card Left / RIGHT
 int lrIndex = 0;
 
 //Car Coming
-int car1 = 0;
 int lrIndex1 = 0;
-int car2 = +35;
 int lrIndex2 = 0;
-int car3 = +70;
 int lrIndex3 = 0;
 
 //For Display TEXT
@@ -182,6 +174,21 @@ void Cloud()
 
 
 
+void GrassBelowRoad()
+{
+    glPushMatrix();
+    glColor3ub(100, 171, 55);
+    glBegin(GL_QUADS);
+    glVertex3f(0.0, 0.0, 0.0);
+    glVertex3f(902.0, 0.0, 0.0);
+    glVertex3f(902.0, 70.0, 0.0);
+    glVertex3f(0.0, 70.0, 0.0);
+    glEnd();
+    glPopMatrix();
+}
+
+
+
 void startGame() {
     //Sky
     glPushMatrix(); //Pushes the current matrix onto a stack
@@ -193,17 +200,19 @@ void startGame() {
     glVertex2i(0, 0);
    
     //Obstacle1
-
-
+    Sun();
+    
+    
+    
     //Print Score
     char buffer[50];
     sprintf_s(buffer, "SCORE: %d", score);
-    glColor3ub(0, 255, 0);
+    glColor3ub(0,0,0);
     renderBitmapString(0, 95, (void*)font3, buffer);
     //Coins count
     char buffer1[50];
     sprintf_s(buffer1, "COINS: %d", FPS);
-    glColor3ub(0, 255, 0);
+    glColor3ub(0,0,0);
     renderBitmapString(90, 95, (void*)font3, buffer1);
     //Level Print
     if (score % 50 == 0) {
@@ -216,7 +225,7 @@ void startGame() {
     }
     char level_buffer[50];
     sprintf_s(level_buffer, "LEVEL: %d", level);
-    glColor3ub(0, 255, 0);
+    glColor3ub(0,0,0);
     renderBitmapString(90,90, (void*)font3, level_buffer);
 
     
@@ -338,16 +347,9 @@ void processKeys(unsigned char key, int x, int y) {
             start = 1;
             gv = 0;
             FPS = 50;
-            roadDivTopMost = 0;
-            roadDivTop = 0;
-            roadDivMdl = 0;
-            roadDivBtm = 0;
             lrIndex = 0;
-            car1 = 0;
             lrIndex1 = 0;
-            car2 = +35;
             lrIndex2 = 0;
-            car3 = +70;
             lrIndex3 = 0;
             score = 0;
             level = 0;
@@ -361,6 +363,12 @@ void processKeys(unsigned char key, int x, int y) {
         break;
     }
 }
+
+void timer(int) {
+    glutPostRedisplay();
+    glutTimerFunc(1000 / FPS, timer, 0);
+}
+
 
 
 int main(int argc, char* argv[])
