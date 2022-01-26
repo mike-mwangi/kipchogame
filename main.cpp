@@ -6,41 +6,45 @@
 #include <stdlib.h>
 #include <iostream>
 #include <valarray>
+#include <cstdlib>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
-float c1xp=0.0,c1yp=0.0,c1zp=0.0;
-float c2xp=0.0,c2yp=0.0,c2zp=0.0;
-float p1xp=0.0,p1yp=0.0,p1zp=0.0;
-float p1sxp=0.0,p1syp=0.0,p1szp=0.0;
-float x=1.0;
-float rxp=0.0,ryp=0.0,rzp=0.0;
-float r=0.0;
+float c1xp = 0.0, c1yp = 0.0, c1zp = 0.0;
+float c2xp = 0.0, c2yp = 0.0, c2zp = 0.0;
+float p1xp = 0.0, p1yp = 0.0, p1zp = 0.0;
+float p1sxp = 0.0, p1syp = 0.0, p1szp = 0.0;
+float x = 1.0;
+float rxp = 0.0, ryp = 0.0, rzp = 0.0;
+float r = 0.0;
 
-float width=-940,width2=600,width3=2000;
+float width = -940, width2 = 600, width3 = 2000;
+int long previousTime = 0;
 
 
 float ver[5][3] =
-        {
-                {-1.0,-1.0,1.0},//the base 0,0 0
-                //{0.0,1.0,0.0},//the base 0,1
-                {0.0,1.0,0.0},// top 1,1 1
-                {1.0,-1.0,1.0},//t 2
-                {-1.0,-1.0,-1.0},// 3 the base
-                // {-1.0,1.0,-1.0},
-                // {1.0,1.0,-1.0},
-                {1.0,-1.0,-1.0},//4
-        };
+{
+        {-1.0,-1.0,1.0},//the base 0,0 0
+        //{0.0,1.0,0.0},//the base 0,1
+        {0.0,1.0,0.0},// top 1,1 1
+        {1.0,-1.0,1.0},//t 2
+        {-1.0,-1.0,-1.0},// 3 the base
+        // {-1.0,1.0,-1.0},
+        // {1.0,1.0,-1.0},
+        {1.0,-1.0,-1.0},//4
+};
 
 GLfloat color[8][3] =
-        {
-                {0.0,0.0,0.0},
-                {1.0,0.0,0.0},
-                {1.0,1.0,0.0},
-                {0.0,1.0,0.0},
-                {0.0,0.0,1.0},
+{
+        {0.0,0.0,0.0},
+        {1.0,0.0,0.0},
+        {1.0,1.0,0.0},
+        {0.0,1.0,0.0},
+        {0.0,0.0,1.0},
 
-        };
+};
 
 void quad(int a, int b, int c, int d)
 {
@@ -124,8 +128,8 @@ void drawCircle(GLfloat x, GLfloat y, GLfloat radius)
     for (i = 0; i <= triangleAmount; i++)
     {
         glVertex2d(
-                x + (radius * cos(i * twicePi / triangleAmount)),
-                y + (radius * sin(i * twicePi / triangleAmount))
+            x + (radius * cos(i * twicePi / triangleAmount)),
+            y + (radius * sin(i * twicePi / triangleAmount))
         );
     }
     glEnd();
@@ -134,15 +138,16 @@ void drawCircle(GLfloat x, GLfloat y, GLfloat radius)
 
 void startGame() {
 
+
     //Print Score
     char buffer[50];
     //sprintf_s(buffer, "SCORE: %d", score);
-    glColor3ub(0,0,0);
+    glColor3ub(0, 0, 0);
     renderBitmapString(0, 95, (void*)font3, buffer);
     //Coins count
     char buffer1[50];
     //sprintf_s(buffer1, "COINS: %d", FPS);
-    glColor3ub(0,0,0);
+    glColor3ub(0, 0, 0);
     renderBitmapString(90, 95, (void*)font3, buffer1);
     //Level Print
     if (score % 50 == 0) {
@@ -155,8 +160,8 @@ void startGame() {
     }
     char level_buffer[50];
     //sprintf_s(level_buffer, "LEVEL: %d", level);
-    glColor3ub(0,0,0);
-    renderBitmapString(90,90, (void*)font3, level_buffer);
+    glColor3ub(0, 0, 0);
+    renderBitmapString(90, 90, (void*)font3, level_buffer);
 
 }
 
@@ -201,16 +206,16 @@ void Sky()
 }
 
 
-float cdxp1=0.0;
-float cdxp2=0.0;
-float cdxp3=0.0;
+float cdxp1 = 0.0;
+float cdxp2 = 0.0;
+float cdxp3 = 0.0;
 
 //Clouds
 void Cloud()
 {
 
     glPushMatrix();
-    glTranslatef(c1xp+10, 0, 0);
+    glTranslatef(c1xp + 10, 0, 0);
     glColor3ub(230, 234, 237);
     drawCircle(594.0f, 586.0f, 20.0f);
     drawCircle(572.0f, 595.0f, 28.0f);
@@ -219,7 +224,7 @@ void Cloud()
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(c1xp+10, 0, 0);
+    glTranslatef(c1xp + 10, 0, 0);
     drawCircle(393.0f, 577.0f, 20.0f);
     drawCircle(370.0f, 585.0f, 28.0f);
     drawCircle(339.0f, 583.0f, 35.0f);
@@ -227,7 +232,7 @@ void Cloud()
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(c1xp+10, 0, 0);
+    glTranslatef(c1xp + 10, 0, 0);
     drawCircle(193.0f, 607.0f, 20.0f);
     drawCircle(170.0f, 615.0f, 28.0f);
     drawCircle(139.0f, 613.0f, 35.0f);
@@ -243,21 +248,21 @@ void Cloud()
 void Rain()
 {
     glPushMatrix();
-    glTranslatef(c1xp+1000,180,0);
-    cout << "Rain speed: "  << c1xp*1 << endl;
-    glColor3ub(103,155,176);
-    for(int j=0;j<20*160;j+=20)
+    glTranslatef(c1xp + 1000, 180, 0);
+    cout << "Rain speed: " << c1xp * 1 << endl;
+    glColor3ub(103, 155, 176);
+    for (int j = 0; j < 20 * 160; j += 20)
     {
-        for(int i=0;i<20*160;i+=20)
+        for (int i = 0; i < 20 * 160; i += 20)
         {
             glBegin(GL_LINES);
-            glVertex2f(0+i+j,0+i);
-            glVertex2f(-5.5+i+j,10+i);
+            glVertex2f(0 + i + j, 0 + i);
+            glVertex2f(-5.5 + i + j, 10 + i);
             glEnd();
 
             glBegin(GL_LINES);
-            glVertex2f(0+i-j,0+i);
-            glVertex2f(-5.5+i-j,10+i);
+            glVertex2f(0 + i - j, 0 + i);
+            glVertex2f(-5.5 + i - j, 10 + i);
             glEnd();
         }
     }
@@ -268,55 +273,55 @@ void Rain()
 //Increases in speed as game continues
 void CloudAndRainMove(int value)
 {
-    width+=1.0;
-    width2-=1.0;
+    width += 1.0;
+    width2 -= 1.0;
     //width3-=0.01;
 
-    if(width<10093)
+    if (width < 10093)
     {
-        cdxp1+=0.09;
-        cdxp2+=0.1;
-        cdxp3+=0.0001; //CloudsT variable
+        cdxp1 += 0.09;
+        cdxp2 += 0.1;
+        cdxp3 += 0.0001; //CloudsT variable
 
-        c1xp+=0.07;
-        if(width>10091)
+        c1xp += 0.07;
+        if (width > 10091)
         {
-            width=-940;
-            c1xp=0.0;
+            width = -940;
+            c1xp = 0.0;
         }
-        if(width==1295)
+        if (width == 1295)
         {
-            cdxp1=0.0;
+            cdxp1 = 0.0;
         }
         cout << "Width: " << width << endl;
     }
-    if(width2>-1614)
+    if (width2 > -1614)
     {
-        c2xp-=0.5;
-        p1xp-=0.001;
-        p1yp+=0.6;
-        if(width2==-1613)
+        c2xp -= 0.5;
+        p1xp -= 0.001;
+        p1yp += 0.6;
+        if (width2 == -1613)
         {
-            width2=600;
-            c2xp=0;
+            width2 = 600;
+            c2xp = 0;
 
-            p1xp=0;
-            p1yp=0;
-            p1sxp=0;
-            p1syp=0;
-            x=1.0;
+            p1xp = 0;
+            p1yp = 0;
+            p1sxp = 0;
+            p1syp = 0;
+            x = 1.0;
             glutPostRedisplay();
         }
-        if(width2<1200)
+        if (width2 < 1200)
         {
-            p1sxp+=0.001;
-            p1syp+=0.001;
+            p1sxp += 0.001;
+            p1syp += 0.001;
             glutPostRedisplay();
         }
         cout << "Width2: " << p1xp << endl;
     }
 
-    glutTimerFunc(0,CloudAndRainMove,25);
+    glutTimerFunc(0, CloudAndRainMove, 25);
 
 }
 
@@ -380,47 +385,155 @@ void processKeys(unsigned char key, int x, int y) {
 
     switch (key)
     {
-        case ' ':
-            if (start == 0) {
-                start = 1;
-                gv = 0;
-                FPS = 50;
-                lrIndex = 0;
-                lrIndex1 = 0;
-                lrIndex2 = 0;
-                lrIndex3 = 0;
-                score = 0;
-                level = 0;
-            }
-            break;
+    case ' ':
+        if (start == 0) {
+            start = 1;
+            gv = 0;
+            FPS = 50;
+            lrIndex = 0;
+            lrIndex1 = 0;
+            lrIndex2 = 0;
+            lrIndex3 = 0;
+            score = 0;
+            level = 0;
+        }
+        break;
 
-        case 'r':
-            if(r==0)
-            {
-                r=1;
-            }else
-            {
-                r=0;
-            }
-            break;
+    case 'r':
+        if (r == 0)
+        {
+            r = 1;
+        }
+        else
+        {
+            r = 0;
+        }
+        break;
 
-        case 'e':
-            exit(1);
-            break;
+    case 'e':
+        exit(1);
+        break;
 
-        case 27:
-            exit(0);
-            break;
+    case 27:
+        exit(0);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
+void DrawfullCircle(float cx, float cy, float r, int num_segments) {
 
+    glBegin(GL_POLYGON);
+    for (int ii = 0; ii < num_segments; ii++) {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle 
+        float x = r * cosf(theta);//calculate the x component 
+        float y = r * sinf(theta);//calculate the y component 
+        glVertex2f(x + cx, y + cy);//output vertex 
+    }
+    glEnd();
+}
+void Character() {
+    //head 
+    glColor3f(0.9, 0.7, 0.6);
+    glBegin(GL_POLYGON);
+    glVertex2f(60, lrIndex + 135);
+    glVertex2f(50, lrIndex + 200);
+    glVertex2f(120, lrIndex + 170);
+    glEnd();
+    //eyes
+    glColor3f(1.0, 1.0, 1.0);
+    DrawfullCircle(75, lrIndex + 190, 20, 20);
+    glColor3f(0.0, 0.0, 0.0);
+    DrawfullCircle(75, lrIndex + 195, 8, 20);
+
+    glColor3f(1, 0.15, 0);
+    glBegin(GL_POLYGON);
+    glVertex2f(30, lrIndex + 140);
+    glVertex2f(150, lrIndex + 140);
+    glVertex2f(150, lrIndex + 145);
+    glVertex2f(30, lrIndex + 145);
+    glEnd();
+    glColor3f(0, 0, 1);
+    glBegin(GL_POLYGON);
+    glVertex2f(30, lrIndex + 145);
+    glVertex2f(150, lrIndex + 145);
+    glVertex2f(150, lrIndex + 140);
+    glVertex2f(30, lrIndex + 140);
+    glEnd();
+
+    glColor3f(1, 0.2, 0);
+    glBegin(GL_POLYGON);
+    glVertex2f(30, lrIndex + 140);
+    glVertex2f(150, lrIndex + 140);
+    glVertex2f(150, lrIndex + 135);
+    glVertex2f(30, lrIndex + 135);
+    glEnd();
+
+    glColor3f(0, 0, 1);
+    glBegin(GL_POLYGON);
+    glVertex2f(30, lrIndex + 120);
+    glVertex2f(150, lrIndex + 120);
+    glVertex2f(150, lrIndex + 110);
+    glVertex2f(30, lrIndex + 110);
+    glEnd();
+
+    // left short
+    glColor3f(0.07, 0.4, 0.7);
+    glPushMatrix();
+    /* if (fortyFive) {
+         glRotatef(45.0, 0,0, 1);
+
+     }
+     else {
+         glRotatef(-45.0, 0, 0, 1);
+     }
+     */
+    glBegin(GL_POLYGON);
+    glVertex2f(35, lrIndex + 110);
+    glVertex2f(45, lrIndex + 110);
+    glVertex2f(45, lrIndex + 90);
+    glVertex2f(35, lrIndex + 90);
+    glEnd();
+    glPopMatrix();
+    glColor3f(0.07, 0.4, 0.7);
+    //right short
+    glBegin(GL_POLYGON);
+    glVertex2f(70, lrIndex + 110);
+    glVertex2f(80, lrIndex + 110);
+    glVertex2f(80, lrIndex + 90);
+    glVertex2f(70, lrIndex + 90);
+    glEnd();
+    //left leg
+    glColor3f(0.9, 0.7, 0.6);
+    glBegin(GL_POLYGON);
+    glVertex2f(35, lrIndex + 90);
+    glVertex2f(45, lrIndex + 90);
+    glVertex2f(45, lrIndex + 70);
+    glVertex2f(35, lrIndex + 70);
+    glEnd();
+
+
+    glColor3f(0.9, 0.7, 0.6);
+
+    glBegin(GL_POLYGON);
+    glVertex2f(70, lrIndex + 90);
+    glVertex2f(80, lrIndex + 90);
+    glVertex2f(80, lrIndex + 70);
+    glVertex2f(70, lrIndex + 70);
+    glEnd();
+}
 
 //Where the objects are displayed from
 void display() {
+    int dif = glutGet(GLUT_ELAPSED_TIME) - previousTime;
+    if (dif >= 1000) {
+        lrIndex = 0;
+        std::cout << "changed";
+    }
+
     glClear(GL_COLOR_BUFFER_BIT);
+
 
     if (start == 1) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -434,8 +547,9 @@ void display() {
         Sun();
         Road();
         Cloud();
+        Character();
 
-        if(r==1)
+        if (r == 1)
         {
             Rain();
         }
@@ -453,35 +567,43 @@ void display() {
 
 void spe_key(int key, int x, int y) {
     switch (key) {
-        case GLUT_KEY_DOWN:
-            if (FPS > (50 + (level * 2)))
-                FPS = FPS - 2;
-            break;
-        case GLUT_KEY_UP:
-            FPS = FPS + 2;
-            break;
+    case GLUT_KEY_DOWN:
+        if (FPS > (50 + (level * 2)))
+            FPS = FPS - 2;
+        break;
+    case GLUT_KEY_UP:
+        FPS = FPS + 2;
+        if (lrIndex == 0) {
+            lrIndex += 50;
+            previousTime = glutGet(GLUT_ELAPSED_TIME);
+        }
+        if (lrIndex == 50 && previousTime != glutGet(GLUT_ELAPSED_TIME));
+        {
+            lrIndex += 50;
+        }
+        break;
 
-        case GLUT_KEY_LEFT:
-            if (lrIndex >= 0) {
-                lrIndex = lrIndex - (FPS / 10);
-                if (lrIndex < 0) {
-                    lrIndex = -1;
-                }
+    case GLUT_KEY_LEFT:
+        if (lrIndex >= 0) {
+            lrIndex = lrIndex - (FPS / 10);
+            if (lrIndex < 0) {
+                lrIndex = -1;
             }
-            break;
+        }
+        break;
 
 
-        case GLUT_KEY_RIGHT:
-            if (lrIndex <= 44) {
-                lrIndex = lrIndex + (FPS / 10);
-                if (lrIndex > 44) {
-                    lrIndex = 45;
-                }
+    case GLUT_KEY_RIGHT:
+        if (lrIndex <= 44) {
+            lrIndex = lrIndex + (FPS / 10);
+            if (lrIndex > 44) {
+                lrIndex = 45;
             }
-            break;
+        }
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
 }
