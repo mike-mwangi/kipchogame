@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/kipchogame.vcxproj
+/kipchogame1.vcxproj.filters
+/kipchogame1.vcxproj
+/kipchogame1.sln
+/kipchogame.vcxproj.filters
+/kipchogame.sln
