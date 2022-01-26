@@ -1,13 +1,16 @@
+#include<windows.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
- #else
+#else
 #include <GL/glut.h>
 #endif
-#include<stdio.h>
+
 #include <stdlib.h>
-#include<math.h>
+#include <stdio.h>
 #include <iostream>
+#include <string>
 using namespace std;
+
 
 float ver[5][3] =
 {
@@ -76,265 +79,46 @@ void specialKeys(int key, int x, int y)
         rotate_x -= 5;
     glutPostRedisplay();
 }
-void eyeright()
-{
-    //function for the right eye
-    glPushMatrix();
-    glTranslatef(.17, 1.1, .75);     //Specify the coordinates for the right eye
-    glRotatef(-45, 0, 0, 1);
-    glScalef(.9, .7, .7);            //Specify the size of the right eye
-    glColor3f(1.0, 1.0, 1.0);       //Specify the color of the eye
-    gluSphere(gluNewQuadric(), .3, 100, 100);
-    glPopMatrix();
-}
-void eyeleft()
-{
-    glPushMatrix();
-    glTranslatef(-.17, 1.1, .75);     //Specify the position for the left eye
-    glRotatef(45, 0, 0, 1);
-    glScalef(.9, .7, .7);
-    glColor3f(1.0, 1.0, 1.0);
-    gluSphere(gluNewQuadric(), .3, 100, 100);
-    glPopMatrix();
-}
 
-void legleft()
-{
-    glPushMatrix();
-    glTranslatef(.3, -.5, 0);     //Specify the position for the left leg
-    glRotatef(-90.0, 1, 0, 0);
-    glScalef(.8, .8, .8);
-    gluCylinder(gluNewQuadric(), .5, .5, .5, 30, 6);
-    glPopMatrix();
-}
+//Game Speed
+int FPS = 50;
+//Game Track
+int start = 0;
+int gv = 0;
+int level = 0;
 
-void legright()
-{
-    glPushMatrix();
-    glTranslatef(-.3, -.5, 0);     //Specify the position for the right leg
-    glRotatef(-90.0, 1, 0, 0);
-    glScalef(.8, .8, .8);
-    gluCylinder(gluNewQuadric(), .5, .5, .5, 30, 6);
-    glPopMatrix();
-}
+//Track Score
+int score = 0;
 
-void armleft()
-{
-    glPushMatrix();
-    glTranslatef(-.82, 0, .1);     //Specify the position for the left arm
-    glRotatef(90, 0, 1, 0);
-    glRotatef(-50, 1, 0, 0);
-    gluCylinder(gluNewQuadric(), .15, .15, .48, 30, 6);
-    glPopMatrix();
-}
+//Form move track
+int roadDivTopMost = 0;
+int roadDivTop = 0;
+int roadDivMdl = 0;
+int roadDivBtm = 0;
 
-void armright()
-{
-    glPushMatrix();
-    glTranslatef(.82, 0, .1);      //Specify the position for the right arm
-    glRotatef(90, 0, 1, 0);
-    glRotatef(-130, 1, 0, 0);
-    gluCylinder(gluNewQuadric(), .15, .15, .48, 30, 6);
-    glPopMatrix();
-}
+//For Card Left / RIGHT
+int lrIndex = 0;
 
-void handleft()
-{
-    glPushMatrix();
-    glTranslatef(.82, 0, .1);     //Specify the position for the left hand
-    glScalef(.4, .3, .3);
-    gluSphere(gluNewQuadric(), .4, 100, 100);
-    glPopMatrix();
-}
-void handright()
-{
-    glPushMatrix();
-    glTranslatef(-.82, 0, .1);    //Specify the position for the right hand
-    glScalef(.4, .3, .3);
-    gluSphere(gluNewQuadric(), .4, 100, 100);
-    glPopMatrix();
-}
+//Car Coming
+int car1 = 0;
+int lrIndex1 = 0;
+int car2 = +35;
+int lrIndex2 = 0;
+int car3 = +70;
+int lrIndex3 = 0;
 
-void mouth()
-{
-    glPushMatrix();
-    glTranslatef(0, .78, .74);
-    glScalef(.4, .4, .1);
-    glColor3f(0.0, 0.0, 0.0);
-    gluSphere(gluNewQuadric(), .4, 100, 100);
-    glPopMatrix();
-}
+//For Display TEXT
+const int font1 = (int)GLUT_BITMAP_TIMES_ROMAN_24;
+const int font2 = (int)GLUT_BITMAP_HELVETICA_18;
+const int font3 = (int)GLUT_BITMAP_8_BY_13;
 
-void teeth()
-{
-    glPushMatrix();
-    glColor3f(1.0, 1.0, 1.0);
-    glTranslatef(-.08, .72, .76);
-    glTranslatef(.055, 0, .005);
-    glutSolidCube(.035);
-    glTranslatef(.055, 0, 0);
-    glutSolidCube(.035);
-    glPopMatrix();
-}
-void eyebrowleft()
-{
-    glPushMatrix();
-    glTranslatef(-.3, 1.5, .97);;
-    glRotatef(90, 0, 1, 0);
-    glRotatef(45, 1, 0, 0);
-    glColor3f(0.0, 0.0, 0.0);
-    gluCylinder(gluNewQuadric(), .05, .01, .3, 4, 6);
-    glPopMatrix();
-}
-
-void eyebrowright()
-{
-    glPushMatrix();
-    glTranslatef(.3, 1.5, .97);
-    glRotatef(270, 0, 1, 0);
-    glRotatef(45, 1, 0, 0);
-    gluCylinder(gluNewQuadric(), .05, .01, .3, 4, 6);
-    glPopMatrix();
-}
-
-void neckring()
-{
-    glPushMatrix();
-    glTranslatef(0, .5, 0);
-    glScalef(.59, .59, .59);
-    glRotatef(90.0, 1, 0, 0);
-    glutSolidTorus(.1, 1.0, 20, 20);
-    glPopMatrix();
-}
-
-
-void head()
-{
-    glPushMatrix();
-    glTranslatef(0, 1.2, 0);
-    glScalef(.9, .9, .9);
-    glColor3f(1.0, 0.8, 0.6);
-    gluSphere(gluNewQuadric(), 1, 100, 100);
-    glPopMatrix();
-}
-
-void maintopball()
-{
-    glPushMatrix();
-    glTranslatef(0, 2.2, 0);
-    glScalef(.9, .9, .9);
-    gluSphere(gluNewQuadric(), .18, 100, 100);
-    glPopMatrix();
-}
-
-void hatring()
-{
-    glPushMatrix();
-    glTranslatef(0, 1.4, 0);
-    glScalef(.84, .84, .84);
-    glRotatef(90.0, 1, 0, 0);
-    glutSolidTorus(.1, 1.0, 20, 20);
-    glPopMatrix();
-}
-
-void footleft()
-{
-    glPushMatrix();
-    glTranslatef(-.3, -.5, 0);
-    glScalef(1.5, .3, 1.5);
-    glColor3f(0.0, 0.0, 0.0);
-    gluSphere(gluNewQuadric(), .3, 100, 100);
-    glPopMatrix();
-}
-
-void footright()
-{
-    glPushMatrix();
-    glTranslatef(.3, -.5, 0);
-    glScalef(1.5, .3, 1.5);
-    glColor3f(0.0, 0.0, 0.0);
-    gluSphere(gluNewQuadric(), .3, 100, 100);
-    glPopMatrix();
-}
-
-void bellyCoatbottom()
-{
-    glPushMatrix();
-    glTranslatef(0, -.2, 0);
-    glScalef(1, .7, 1);
-    glRotatef(90.0, 1, 0, 0);
-    gluDisk(gluNewQuadric(), 0, .8, 30, 30);
-    glPopMatrix();
-}
-
-void BellyCoat()
-{
-    glPushMatrix();
-    glTranslatef(0, .5, 0);
-    glScalef(1, .7, 1);
-    glRotatef(90.0, 1, 0, 0);
-    gluCylinder(gluNewQuadric(), .6, .8, 1, 100, 100);
-    glPopMatrix();
-}
-
-void pupilleft()
-{
-    glPushMatrix();
-    glTranslatef(-.17, 1.1, .88);
-    glScalef(.9, .9, .9);
-    gluSphere(gluNewQuadric(), .1, 100, 100);
-    glPopMatrix();
-}
-
-void pupilright()
-{
-    glPushMatrix();
-    glTranslatef(.17, 1.1, .88);
-    glScalef(.9, .9, .9);
-    gluSphere(gluNewQuadric(), .1, 100, 100);
-    glPopMatrix();
-}
-
-void topbutton()
-{
-    glPushMatrix();
-    glTranslatef(-.1, .4, .85);
-    glScalef(1.9, 1.9, 1.9);
-    gluSphere(gluNewQuadric(), .04, 100, 100);
-    glPopMatrix();
-}
-void middlebutton()
-{
-    glPushMatrix();
-    glTranslatef(-.1, .15, .98);
-    glScalef(1.9, 1.9, 1.9);
-    gluSphere(gluNewQuadric(), .04, 100, 100);
-    glPopMatrix();
-}
-void bottombutton()
-{
-    glPushMatrix();
-    glTranslatef(-.1, -.1, .92);
-    glScalef(1.9, 1.9, 1.9);
-    glColor3f(0.0, 0.0, 0.0);
-    gluSphere(gluNewQuadric(), .04, 100, 100);
-    glPopMatrix();
-}
-
-//Sky
-void Sky()
-{
-    glPushMatrix(); //Pushes the current matrix onto a stack
-    glColor3ub(135, 206, 250); //Takes unsigned byte parameters with a range from 0 to 255
-    glBegin(GL_QUADS);
-    glVertex2i(0, 684); //2i to mean it takes 2 values that are integers
-    glVertex2i(902, 684);
-    glVertex2i(902, 0);
-    glVertex2i(0, 0);
-    glEnd();
-    glPopMatrix(); //Reset the transformations so that they don't affect other objects.
-
-    glutPostRedisplay(); //Sets a flag so that on the next iteration of the mainloop, your registered display() function is called
+char s[30];
+void renderBitmapString(float x, float y, void* font, const char* string) {
+    const char* c;
+    glRasterPos2f(x, y);
+    for (c = string; *c != '\0'; c++) {
+        glutBitmapCharacter(font, *c);
+    }
 }
 
 //Used to draw any circle needed
@@ -358,8 +142,7 @@ void drawCircle(GLfloat x, GLfloat y, GLfloat radius)
     }
     glEnd();
 }
-
-//Sun
+//sun
 void Sun()
 {
     glColor3ub(253, 184, 19);
@@ -397,187 +180,206 @@ void Cloud()
     glutPostRedisplay();
 }
 
-//Road in which the character moves on
-void Road()
-{
-    glPushMatrix();
-    glColor3ub(0, 0, 0);
+
+
+void startGame() {
+    //Sky
+    glPushMatrix(); //Pushes the current matrix onto a stack
+    glColor3ub(135, 206, 250); //Takes unsigned byte parameters with a range from 0 to 255
     glBegin(GL_QUADS);
-    glVertex2i(0, 180);
-    glVertex2i(902, 180);
+    glVertex2i(0, 684); //2i to mean it takes 2 values that are integers
+    glVertex2i(902, 684);
+    glVertex2i(902, 0);
+    glVertex2i(0, 0);
+   
+    //Obstacle1
+
+
+    //Print Score
+    char buffer[50];
+    sprintf_s(buffer, "SCORE: %d", score);
+    glColor3ub(0, 255, 0);
+    renderBitmapString(0, 95, (void*)font3, buffer);
+    //Coins count
+    char buffer1[50];
+    sprintf_s(buffer1, "COINS: %d", FPS);
+    glColor3ub(0, 255, 0);
+    renderBitmapString(90, 95, (void*)font3, buffer1);
+    //Level Print
+    if (score % 50 == 0) {
+        int last = score / 50;
+        if (last != level) {
+            level = score / 50;
+            FPS = FPS + 2;
+
+        }
+    }
+    char level_buffer[50];
+    sprintf_s(level_buffer, "LEVEL: %d", level);
+    glColor3ub(0, 255, 0);
+    renderBitmapString(90,90, (void*)font3, level_buffer);
+
+    
+
+}
+
+void flashScreen() {
+
+    //Flash screen - Sky
+    glPushMatrix();
+    glColor3ub(135, 206, 250);
+    glBegin(GL_QUADS);
+    glVertex2i(0, 684); //2i to mean it takes 2 values that are integers
+    glVertex2i(902, 684);
     glVertex2i(902, 0);
     glVertex2i(0, 0);
     glEnd();
-    glPopMatrix();
 
 
-}
-
-void GrassBelowRoad()
-{
-    glPushMatrix();
+    //Instructions on controls
     glColor3ub(100, 171, 55);
-    glBegin(GL_QUADS);
-    glVertex3f(0.0, 0.0, 0.0);
-    glVertex3f(902.0, 0.0, 0.0);
-    glVertex3f(902.0, 70.0, 0.0);
-    glVertex3f(0.0, 70.0, 0.0);
+    glBegin(GL_POLYGON);
+    glVertex2f(28, 50);
+    glVertex2f(78, 50);
+    glVertex2f(78, 30);
+    glVertex2f(28, 30);
     glEnd();
-    glPopMatrix();
+
+
+    //Text display in the flash screen after hitting an obstacle
+    if (gv == 1) {
+        glColor3f(1.000, 0.000, 0.000);
+        renderBitmapString(35, 70, (void*)font1, "GAME OVER!");
+        glColor3f(1.000, 0.000, 0.000);
+        char buffer2[50];
+        sprintf_s(buffer2, "Score: %d", score);
+        renderBitmapString(33, 66, (void*)font1, buffer2);
+    }
+
+    //Title
+    glColor3ub(0, 0, 0);
+    renderBitmapString(45, 55, (void*)font1, "KIPCHOGAME");
+
+    //controls
+    glColor3ub(0, 0, 0);
+    renderBitmapString(30, 47, (void*)font2, "Press SPACE to START");
+    renderBitmapString(30, 44, (void*)font2, "Press ESC to Exit");
+
+    
+    glColor3ub(255, 255, 255);
+    renderBitmapString(30, 41, (void*)font3, "Press UP to increase Speed");
+    renderBitmapString(30, 38, (void*)font3, "Press DOWN to decrease Speed");
+    renderBitmapString(30, 35, (void*)font3, "Press RIGHT to turn Right");
+    renderBitmapString(30, 32, (void*)font3, "Press LEFT to turn Left");
+
 }
 
-void GrassAboveRoad()
-{
-    glPushMatrix();
-    glColor3ub(100, 171, 55);
-    //glColor3ub(100,171,55);
-    glBegin(GL_QUADS);
-    glVertex3f(0.0, 180.0, 0.0);
-    glVertex3f(902.0, 180.0, 0.0);
-    glVertex3f(902.0, 254.0, 0.0);
-    glVertex3f(0.0, 254.0, 0.0);
-    glEnd();
-    glPopMatrix();
-}
 
-void display()
-{
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0.0, 902.0, 0.0, 684.0);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_LIGHTING);
-    glDepthMask(GL_FALSE);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    //draw 2D image
-    Sky();
-    Sun();
-    Cloud();
-    Road();
-    GrassAboveRoad();
-    GrassBelowRoad();
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    glDepthMask(GL_TRUE);
-    glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_LIGHTING);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    int w = glutGet(GLUT_WINDOW_WIDTH);
-    int h = glutGet(GLUT_WINDOW_HEIGHT);
-    gluPerspective(60, w / h, 1.0, 100);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-    //draw 3D objects
-    eyeright();
-    eyeleft();
-    eyebrowleft();
-    eyebrowright();
-    glColor3f(1.0, 1.0, 1.0);
-    neckring();
-    glColor3ub(50, 40, 60);
-    legright();
-    legleft();
-    glColor3ub(0, 0, 128);
-    armleft();
-    armright();
-    BellyCoat();
-    bellyCoatbottom();
-    glColor3ub(255, 222, 173);
-    handleft();
-    handright();
-    mouth();
-    teeth();
-    glColor3ub(255, 222, 173);
-    head();
-    glColor3ub(234, 221, 202);
-    footleft();
-    footright();
-    topbutton();
-    middlebutton();
-    bottombutton();
-    pupilleft();
-    pupilright();
+    if (start == 1) {
+        glClearColor(0.000, 0.392, 0.000, 1);
+        startGame();
+    }
+
+    else {
+        flashScreen();
+
+    }
+    glFlush();
     glutSwapBuffers();
-    /*
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    Sky();
-    Sun();
-    Cloud();
-    Road();
-    GrassAboveRoad();
-    GrassBelowRoad();
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    int w = glutGet(GLUT_WINDOW_WIDTH);
-    int h = glutGet(GLUT_WINDOW_HEIGHT);
-    gluPerspective(60, w / h, 1.0, 100);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    eyeright();
-    eyeleft();
-    eyebrowleft();
-    eyebrowright();
-    glColor3f(0.0, 1.0, 0.0);
-    neckring();
-    glColor3ub(50, 40, 60);
-    legright();
-    legleft();
-    glColor3ub(255, 90, 0);
-    armleft();
-    armright();
-    BellyCoat();
-    bellyCoatbottom();
-    glColor3ub(0, 185, 0);
-    handleft();
-    handright();
-    mouth();
-    teeth();
-    glColor3ub(255, 222, 173);
-    head();
-    glColor3f(0.0, 0.0, 0.0);
-    footleft();
-    footright();
-    topbutton();
-    middlebutton();
-    bottombutton();
-    pupilleft();
-    pupilright();
-
-    glutSwapBuffers();
-    */
-}
-
-void myInit(void)
-{
-    glClearColor(1.0, 1.0, 1.0, 0.0);
-    glColor3f(0.5f, 1.0f, 0.5f);
-    glPointSize(4.0);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0.0, 902.0, 0.0, 684.0);
 }
 
 
-int main(int argc, char** argv)
+
+void spe_key(int key, int x, int y) {
+    switch (key) {
+    case GLUT_KEY_DOWN:
+        if (FPS > (50 + (level * 2)))
+            FPS = FPS - 2;
+        break;
+    case GLUT_KEY_UP:
+        FPS = FPS + 2;
+        break;
+
+    case GLUT_KEY_LEFT:
+        if (lrIndex >= 0) {
+            lrIndex = lrIndex - (FPS / 10);
+            if (lrIndex < 0) {
+                lrIndex = -1;
+            }
+        }
+        break;
+
+
+    case GLUT_KEY_RIGHT:
+        if (lrIndex <= 44) {
+            lrIndex = lrIndex + (FPS / 10);
+            if (lrIndex > 44) {
+                lrIndex = 45;
+            }
+        }
+        break;
+
+    default:
+        break;
+    }
+
+}
+
+void processKeys(unsigned char key, int x, int y) {
+
+    switch (key)
+    {
+    case ' ':
+        if (start == 0) {
+            start = 1;
+            gv = 0;
+            FPS = 50;
+            roadDivTopMost = 0;
+            roadDivTop = 0;
+            roadDivMdl = 0;
+            roadDivBtm = 0;
+            lrIndex = 0;
+            car1 = 0;
+            lrIndex1 = 0;
+            car2 = +35;
+            lrIndex2 = 0;
+            car3 = +70;
+            lrIndex3 = 0;
+            score = 0;
+            level = 0;
+        }
+        break;
+
+    case 27:
+        exit(0);
+        break;
+    default:
+        break;
+    }
+}
+
+
+int main(int argc, char* argv[])
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(902, 684);
     glutInitWindowPosition(250, 30);
-    glutCreateWindow("kipchogame");
+    glutCreateWindow("KIPCHOGAME");
+
     glutDisplayFunc(display);
-    glutSpecialFunc(specialKeys);
-    glEnable(GL_DEPTH_TEST);
-    myInit();
+    glutSpecialFunc(spe_key);
+    glutKeyboardFunc(processKeys);
+
+    glOrtho(0, 100, 0, 100, -1, 1);
+    glClearColor(0.184, 0.310, 0.310, 1);
+
+    glutTimerFunc(1000, timer, 0);
     glutMainLoop();
+
     return 0;
 }
