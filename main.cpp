@@ -197,18 +197,37 @@ void checkCoinPositions() {
         reDrawObstacle();
     }
 }
+
+int coinCount = 0;
+
 void checkIfPlayerDied() {
-    printf(" obstacle pit %f", ObstaclePit.x);
-    if (upDownMovement==0 && ObstaclePit.x <103 && ObstaclePit.x>10) {
-        std::cout << "fell into a ditch";
-       gameOverFlag = 1;
+    // printf(" obstacle pit %f", ObstaclePit.x);
+    if (upDownMovement == 0 && ObstaclePit.x < 103 && ObstaclePit.x>10) {
+        //  std::cout << "fell into a ditch";
+        gameOverFlag = 1;
         start = 0;
 
     }
     if (upDownMovement == 0 && obstacle.x < 103 && obstacle.x>10) {
-        std::cout << "hit by a wall";
-       // gv = 1;
+        //   std::cout << "hit by a wall";
+        gameOverFlag = 1;
+        start = 0;
     }
+    // check if coin has been collected
+    int minx = 10;
+    int maxx = 105;
+
+    int maxy = 315 + upDownMovement;
+    int miny = 180.0 + upDownMovement;
+
+
+    for (auto& current : coins) {
+        if (current.x > minx && current.x < maxx && current.y>miny && current.y < maxy) {
+            coinCount++;
+            printf("\n coin count %i", coinCount);
+        }
+    }
+
 }
 
 
@@ -258,7 +277,7 @@ void displayScore() {
 
     //Coins count
     char buffer1[50];
-    sprintf_s(buffer1, "COINS: %d", FPS);
+    sprintf_s(buffer1, "COINS: %d", coinCount);
     glColor3f(0, 1.0, 0);
     renderBitmapString(20, 55, (void*)font3, buffer1);
     //Level Print
@@ -437,7 +456,6 @@ void flashScreen() {
     glVertex2i(0, 0);
     glEnd();
 
-
     //Instructions on controls
     glColor3ub(100, 171, 55);
     glBegin(GL_POLYGON);
@@ -447,25 +465,15 @@ void flashScreen() {
     glVertex2f(330, 170);
     glEnd();
 
-
     //Text display in the flash screen after hitting an obstacle
     if (gameOverFlag == 1) {
         glColor3f(1.000, 0.000, 0.000);
-        renderBitmapString(35, 70, (void*)font1, "GAME OVER!");
-        glColor3f(1.000, 0.000, 0.000);
-        char buffer2[50];
-        sprintf_s(buffer2, "Score: %d", score);
-        renderBitmapString(33, 66, (void*)font1, buffer2);
+        renderBitmapString(350, 460, (void*)font1, "GAME OVER!");
     }
 
     //Title
     glColor3ub(0, 0, 0);
     renderBitmapString(350, 430, (void*)font1, "KIPCHOGAME");
-
-    //controls
-    glColor3ub(0, 0, 0);
-    renderBitmapString(30, 47, (void*)font2, "Press SPACE to START");
-    renderBitmapString(30, 44, (void*)font2, "Press ESC to Exit");
 
     //controls
     glColor3ub(0, 0, 0);
@@ -491,7 +499,7 @@ void processKeys(unsigned char key, int x, int y) {
 
     switch (key)
     {
-    case ' ':
+    case 's':
         if (start == 0) {
             start = 1;
             gameOverFlag = 0;
@@ -792,29 +800,7 @@ void spe_key(int key, int x, int y) {
             upDownMovement += 50;
         }
         break;
-        /*
-    case GLUT_KEY_LEFT:
-        if (lrIndex >= 0) {
-            lrIndex = lrIndex - (FPS / 10);
-            if (lrIndex < 0) {
-                lrIndex = -1;
-            }
-        }
-        
-        break;
 
-
-    case GLUT_KEY_RIGHT:
-        
-        if (lrIndex <= 44) {
-            lrIndex = lrIndex + (FPS / 10);
-            if (lrIndex > 44) {
-                lrIndex = 45;
-            }
-        }
-        
-        break;
-        */
 
     default:
         break;
@@ -835,8 +821,6 @@ void randomPositioning() {
 
 
 void timer(int) {
-
-
     glutPostRedisplay();
     glutTimerFunc(1000 / FPS, timer, 0);
 }
@@ -864,4 +848,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-
