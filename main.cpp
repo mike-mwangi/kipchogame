@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <random>
+#include <list>
 
 using namespace std;
 
@@ -103,6 +105,119 @@ const int font1 = (uintptr_t)GLUT_BITMAP_TIMES_ROMAN_24;
 const int font2 = (uintptr_t)GLUT_BITMAP_HELVETICA_18;
 const int font3 = (uintptr_t)GLUT_BITMAP_8_BY_13;
 
+struct coin {
+public:
+    float x;
+    float y;
+};
+struct pit {
+public:
+    float x;
+    float y;
+};
+struct Obstacle {
+    float x;
+};
+vector<coin> coins;
+
+int currentCoin = 0;
+pit ObstaclePit;
+Obstacle obstacle;
+
+void initRandoms() {
+    for (int i = 0; i <= 3; i++) {
+        random_device rand_dev;
+        mt19937 generator(rand_dev());
+        uniform_real_distribution<double> distrPositionX(110.0, 900.0);
+        uniform_real_distribution<double> distrPositionY(180.0, 500.0);
+        coin tempCoin;
+        tempCoin.x = distrPositionX(generator);
+        tempCoin.y = distrPositionY(generator);
+        coins.push_back(tempCoin);
+    }
+    random_device rand_dev;
+    mt19937 generator(rand_dev());
+    uniform_real_distribution<double> distrPositionX(100, 900);
+    ObstaclePit.x = distrPositionX(generator);
+    obstacle.x = distrPositionX(generator);
+    if (abs(ObstaclePit.x - obstacle.x) < 100) {
+        obstacle.x += 100;
+    }
+
+}
+void updateCoins(int value) {
+    for (auto& coin : coins) {
+        coin.x = coin.x - 1.0;
+
+    }
+    ObstaclePit.x = ObstaclePit.x - 1;
+    obstacle.x -= 1;
+    glutTimerFunc(1000, updateCoins, 1);
+}
+void reDrawCoin(int value) {
+    random_device rand_dev;
+    mt19937 generator(rand_dev());
+    uniform_real_distribution<double> distrPositionX(20, 70);
+    uniform_real_distribution<double> distrPositionY(180.0, 500.0);
+    coin tempCoin;
+    tempCoin.x = 900.0 + distrPositionX(generator);
+    tempCoin.y = distrPositionY(generator);
+    coins[value] = tempCoin;
+
+
+}
+void reDrawObstaclePit() {
+    random_device rand_dev;
+    mt19937 generator(rand_dev());
+    uniform_real_distribution<double> distrPositionX(100, 600);
+    ObstaclePit.x = 900 + distrPositionX(generator);
+
+}
+void reDrawObstacle() {
+    random_device rand_dev;
+    mt19937 generator(rand_dev());
+    uniform_real_distribution<double> distrPositionX(100, 600);
+    obstacle.x = 900 + distrPositionX(generator);
+
+};
+void checkCoinPositions() {
+    //coin current = coins.at(currentCoin);
+    int i = 0;
+    for (auto& current : coins) {
+        if (current.x <= 10) {
+            reDrawCoin(i);
+
+        }
+        i++;
+    }
+    if (ObstaclePit.x <= 10) {
+        reDrawObstaclePit();
+    }
+    if (obstacle.x <= 10) {
+        reDrawObstacle();
+    }
+}
+
+void checkIfPlayerDied() {
+    printf(" obstacle pit %f", ObstaclePit.x);
+    if (lrIndex == 0 && ObstaclePit.x < 103 && ObstaclePit.x>10) {
+        std::cout << "fell into a ditch";
+        gv = 1;
+
+    }
+    if (lrIndex == 0 && obstacle.x < 103 && obstacle.x>10) {
+        std::cout << "hit by a wall";
+        gv = 1;
+    }
+}
+
+void checkObstaclePosition() {
+
+}
+
+
+
+
 char s[30];
 void renderBitmapString(float x, float y, void* font, const char* string) {
     const char* c;
@@ -150,7 +265,7 @@ void startGame() {
     glColor3ub(0, 0, 0);
     renderBitmapString(90, 95, (void*)font3, buffer1);
     //Level Print
-    if (score % 50 == 0) {
+    if (score % 500 == 0) {
         int last = score / 50;
         if (last != level) {
             level = score / 50;
@@ -378,6 +493,8 @@ void flashScreen() {
 }
 
 
+
+
 //Keystrokes to trigger certain processes. Eg: Use 'r' to turn rain and off.
 // 'e' to exit application
 // 'space' to start
@@ -459,6 +576,7 @@ void Character() {
     glColor3f(0.0, 0.0, 0.0);
     DrawfullCircle(83, lrIndex + 292, 6, 20);
 
+    //shirt stripes
     glColor3f(1.0f, 0.5f, 0.0f);
     glBegin(GL_POLYGON);
     glVertex2f(10, lrIndex + 260);
@@ -567,11 +685,66 @@ void Character() {
     glVertex2f(70, lrIndex + 190);
     glEnd();
 }
+void obstaclePit() {
+
+
+    glColor3ub(135, 206, 250);
+    glBegin(GL_POLYGON);
+    glVertex2f(ObstaclePit.x - 90, 180);
+    glVertex2f(ObstaclePit.x, 180);
+    glVertex2f(ObstaclePit.x, 90);
+    glVertex2f(ObstaclePit.x - 90, 90);
+    glEnd();
+
+    /* for (auto const& obstaclePit : ) {
+         glColor3ub(255, 255, 255);
+         drawCircle(coin.x, coin.y, 18.0f);
+         glColor3ub(253, 184, 19);
+         drawCircle(coin.x, coin.y, 15.0f);
+     }
+     */
+}
+
+void obstacleDome() {
+    glColor3ub(139, 69, 19);
+    glBegin(GL_POLYGON);
+    glVertex2f(obstacle.x, 180);
+    glVertex2f(obstacle.x + 100, 180);
+    glVertex2f(obstacle.x + 100, 260);
+    glVertex2f(obstacle.x, 260);
+    glEnd();
+
+    //drawCircle(obstacle.x + 50, 250, 50);
+}
+
+void Coin() {
+    //Outer circle
+   /**/
+
+    for (auto const& coin : coins) {
+        glColor3ub(255, 255, 255);
+        drawCircle(coin.x, coin.y, 18.0f);
+        glColor3ub(253, 184, 19);
+        drawCircle(coin.x, coin.y, 15.0f);
+    }
+    /*
+    glColor3ub(255, 255, 255);
+    drawCircle(500.0f, 200.0f, 18.0f);
+     drawCircle(600.0f, 400.0f, 18.0f);
+     drawCircle(860.0f, 200.0f, 18.0f);
+
+     glColor3ub(253, 184, 19);
+     drawCircle(500.0f, 200.0f, 15.0f);
+     drawCircle(600.0f, 400.0f, 15.0f);
+     drawCircle(860.0f, 200.0f, 15.0f);
+     */
+    glutPostRedisplay();
+}
 
 //Where the objects are displayed from
 void display() {
     int dif = glutGet(GLUT_ELAPSED_TIME) - previousTime;
-    if (dif >= 1000) {
+    if (dif >= 1500) {
         lrIndex = 0;
         std::cout << "changed";
     }
@@ -586,12 +759,20 @@ void display() {
         startGame();
 
         CloudAndRainMove(0);
+        updateCoins(0);
+
         //draw 2D image        startGame();
         Sky();
         Sun();
         Road();
         Cloud();
         Character();
+        obstaclePit();
+        obstacleDome();
+        Coin();
+        checkCoinPositions();
+        checkIfPlayerDied();
+
 
         if (r == 1)
         {
@@ -651,9 +832,22 @@ void spe_key(int key, int x, int y) {
     }
 
 }
+void randomPositioning() {
+    for (auto& coin : coins) {
+        random_device rand_dev;
+        mt19937 generator(rand_dev());
+        uniform_real_distribution<float> distrPositionX(110, 900);
+        uniform_real_distribution<double> distrPositionY(500, 180);
+
+        coin.x = distrPositionX(generator);
+        coin.y = distrPositionY(generator);
+    }
+}
 
 
 void timer(int) {
+
+
     glutPostRedisplay();
     glutTimerFunc(1000 / FPS, timer, 0);
 }
@@ -666,6 +860,8 @@ int main(int argc, char* argv[])
     glutInitWindowSize(902, 684);
     glutInitWindowPosition(250, 30);
     glutCreateWindow("KIPCHOGAME");
+
+    initRandoms();
 
     glutDisplayFunc(display);
     glutSpecialFunc(spe_key);
