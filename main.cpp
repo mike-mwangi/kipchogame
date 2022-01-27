@@ -434,48 +434,75 @@ void DrawfullCircle(float cx, float cy, float r, int num_segments) {
     glEnd();
 }
 void Character() {
+    //hair
+
+    glTranslatef(10, 0, 0);
+    glColor3ub(255, 140, 0);
+    DrawfullCircle(19.0f, lrIndex + 295.0f, 5.0f, 10);
+    DrawfullCircle(17.0f, lrIndex + 318.0f, 7.0f, 10);
+    DrawfullCircle(15.0f, lrIndex + 315.0f, 6.0f, 10);
+    DrawfullCircle(14.0f, lrIndex + 310.0f, 5.0f, 10);
+    DrawfullCircle(23.0f, lrIndex + 305.0f, 6.0f, 10);
+    DrawfullCircle(20.0f, lrIndex + 300.0f, 5.0f, 10);
+    DrawfullCircle(23.0f, lrIndex + 310.0f, 8.0f, 10);
+    DrawfullCircle(20.0f, lrIndex + 312.0f, 7.0f, 10);
     //head 
     glColor3f(0.9, 0.7, 0.6);
     glBegin(GL_POLYGON);
-    glVertex2f(60, lrIndex + 135);
-    glVertex2f(50, lrIndex + 200);
-    glVertex2f(120, lrIndex + 170);
+    glVertex2f(50, lrIndex + 255);
+    glVertex2f(20, lrIndex + 310);
+    glVertex2f(120, lrIndex + 280);
     glEnd();
     //eyes
     glColor3f(1.0, 1.0, 1.0);
-    DrawfullCircle(75, lrIndex + 190, 20, 20);
+    DrawfullCircle(75, lrIndex + 290, 15, 20);
     glColor3f(0.0, 0.0, 0.0);
-    DrawfullCircle(75, lrIndex + 195, 8, 20);
+    DrawfullCircle(83, lrIndex + 292, 6, 20);
 
-    glColor3f(1, 0.15, 0);
+    glColor3f(1.0f, 0.5f, 0.0f);
     glBegin(GL_POLYGON);
-    glVertex2f(30, lrIndex + 140);
-    glVertex2f(150, lrIndex + 140);
-    glVertex2f(150, lrIndex + 145);
-    glVertex2f(30, lrIndex + 145);
-    glEnd();
-    glColor3f(0, 0, 1);
-    glBegin(GL_POLYGON);
-    glVertex2f(30, lrIndex + 145);
-    glVertex2f(150, lrIndex + 145);
-    glVertex2f(150, lrIndex + 140);
-    glVertex2f(30, lrIndex + 140);
+    glVertex2f(10, lrIndex + 260);
+    glVertex2f(105, lrIndex + 260);
+    glVertex2f(105, lrIndex + 255);
+    glVertex2f(10, lrIndex + 255);
     glEnd();
 
-    glColor3f(1, 0.2, 0);
+    glColor3f(0.0f, 0.08f, 0.1f);
     glBegin(GL_POLYGON);
-    glVertex2f(30, lrIndex + 140);
-    glVertex2f(150, lrIndex + 140);
-    glVertex2f(150, lrIndex + 135);
-    glVertex2f(30, lrIndex + 135);
+    glVertex2f(10, lrIndex + 255);
+    glVertex2f(105, lrIndex + 255);
+    glVertex2f(105, lrIndex + 250);
+    glVertex2f(10, lrIndex + 250);
+    glEnd();
+    glColor3f(1.0f, 0.5f, 0.0f);
+    glBegin(GL_POLYGON);
+    glVertex2f(10, lrIndex + 250);
+    glVertex2f(105, lrIndex + 250);
+    glVertex2f(105, lrIndex + 245);
+    glVertex2f(10, lrIndex + 245);
+    glEnd();
+    glColor3f(0.0f, 0.08f, 0.1f);
+    glBegin(GL_POLYGON);
+    glVertex2f(10, lrIndex + 245);
+    glVertex2f(105, lrIndex + 245);
+    glVertex2f(105, lrIndex + 240);
+    glVertex2f(10, lrIndex + 240);
     glEnd();
 
-    glColor3f(0, 0, 1);
+    glColor3f(1.0f, 0.5f, 0.0f);
     glBegin(GL_POLYGON);
-    glVertex2f(30, lrIndex + 120);
-    glVertex2f(150, lrIndex + 120);
-    glVertex2f(150, lrIndex + 110);
-    glVertex2f(30, lrIndex + 110);
+    glVertex2f(10, lrIndex + 240);
+    glVertex2f(105, lrIndex + 240);
+    glVertex2f(105, lrIndex + 235);
+    glVertex2f(10, lrIndex + 235);
+    glEnd();
+
+    glColor3f(0.0f, 0.08f, 0.1f);
+    glBegin(GL_POLYGON);
+    glVertex2f(10, lrIndex + 235);
+    glVertex2f(105, lrIndex + 235);
+    glVertex2f(105, lrIndex + 230);
+    glVertex2f(10, lrIndex + 230);
     glEnd();
 
     // left short
@@ -490,37 +517,54 @@ void Character() {
      }
      */
     glBegin(GL_POLYGON);
-    glVertex2f(35, lrIndex + 110);
-    glVertex2f(45, lrIndex + 110);
-    glVertex2f(45, lrIndex + 90);
-    glVertex2f(35, lrIndex + 90);
+    glVertex2f(35, lrIndex + 230);
+    glVertex2f(50, lrIndex + 230);
+    glVertex2f(50, lrIndex + 210);
+    glVertex2f(35, lrIndex + 210);
     glEnd();
     glPopMatrix();
     glColor3f(0.07, 0.4, 0.7);
     //right short
     glBegin(GL_POLYGON);
-    glVertex2f(70, lrIndex + 110);
-    glVertex2f(80, lrIndex + 110);
-    glVertex2f(80, lrIndex + 90);
-    glVertex2f(70, lrIndex + 90);
+    glVertex2f(70, lrIndex + 230);
+    glVertex2f(85, lrIndex + 230);
+    glVertex2f(85, lrIndex + 210);
+    glVertex2f(70, lrIndex + 210);
     glEnd();
     //left leg
     glColor3f(0.9, 0.7, 0.6);
     glBegin(GL_POLYGON);
-    glVertex2f(35, lrIndex + 90);
-    glVertex2f(45, lrIndex + 90);
-    glVertex2f(45, lrIndex + 70);
-    glVertex2f(35, lrIndex + 70);
+    glVertex2f(35, lrIndex + 210);
+    glVertex2f(50, lrIndex + 210);
+    glVertex2f(50, lrIndex + 190);
+    glVertex2f(35, lrIndex + 190);
     glEnd();
-
+    //right leg
 
     glColor3f(0.9, 0.7, 0.6);
 
     glBegin(GL_POLYGON);
-    glVertex2f(70, lrIndex + 90);
-    glVertex2f(80, lrIndex + 90);
-    glVertex2f(80, lrIndex + 70);
-    glVertex2f(70, lrIndex + 70);
+    glVertex2f(70, lrIndex + 210);
+    glVertex2f(85, lrIndex + 210);
+    glVertex2f(85, lrIndex + 190);
+    glVertex2f(70, lrIndex + 190);
+    glEnd();
+    glColor3f(1, 1, 1);
+    // left shoe
+    glBegin(GL_POLYGON);
+    glVertex2f(35, lrIndex + 180);
+    glVertex2f(50, lrIndex + 180);
+    glVertex2f(50, lrIndex + 190);
+    glVertex2f(35, lrIndex + 190);
+    glEnd();
+
+    glColor3f(1, 1, 1);
+
+    glBegin(GL_POLYGON);
+    glVertex2f(70, lrIndex + 180);
+    glVertex2f(85, lrIndex + 180);
+    glVertex2f(85, lrIndex + 190);
+    glVertex2f(70, lrIndex + 190);
     glEnd();
 }
 
