@@ -13,7 +13,7 @@
 #include <list>
 
 using namespace std;
-
+// cloud manipulation
 float c1xp = 0.0, c1yp = 0.0, c1zp = 0.0;
 float c2xp = 0.0, c2yp = 0.0, c2zp = 0.0;
 float p1xp = 0.0, p1yp = 0.0, p1zp = 0.0;
@@ -21,12 +21,13 @@ float p1sxp = 0.0, p1syp = 0.0, p1szp = 0.0;
 float x = 1.0;
 float rxp = 0.0, ryp = 0.0, rzp = 0.0;
 float r = 0.0;
-
 float width = -940, width2 = 600, width3 = 2000;
+//end of cloud manipulation
+// jump manip
 int long previousTime = 0;
 
 
-float ver[5][3] =
+/*float ver[5][3] =
 {
         {-1.0,-1.0,1.0},//the base 0,0 0
         //{0.0,1.0,0.0},//the base 0,1
@@ -46,7 +47,7 @@ GLfloat color[8][3] =
         {0.0,1.0,0.0},
         {0.0,0.0,1.0},
 
-};
+
 
 void quad(int a, int b, int c, int d)
 {
@@ -66,6 +67,7 @@ void quad(int a, int b, int c, int d)
 }
 
 
+
 double rotate_y = 0;
 double rotate_x = 0;
 void specialKeys(int key, int x, int y)
@@ -80,30 +82,30 @@ void specialKeys(int key, int x, int y)
         rotate_x -= 5;
     glutPostRedisplay();
 }
+*/
 
 //Game Speed
 int FPS = 50;
 //Game Track
 int start = 0;
-int gv = 0;
-int level = 0;
+int gameOverFlag = 0;
+
 
 //Track Score
 int score = 0;
 
 
 //For Card Left / RIGHT
-int lrIndex = 0;
-
-//Car Coming
-int lrIndex1 = 0;
-int lrIndex2 = 0;
-int lrIndex3 = 0;
+int upDownMovement = 0;
 
 //For Display TEXT
 const int font1 = (uintptr_t)GLUT_BITMAP_TIMES_ROMAN_24;
 const int font2 = (uintptr_t)GLUT_BITMAP_HELVETICA_18;
 const int font3 = (uintptr_t)GLUT_BITMAP_8_BY_13;
+//cloud variables
+float cdxp1 = 0.0;
+float cdxp2 = 0.0;
+float cdxp3 = 0.0;
 
 struct coin {
 public:
@@ -119,8 +121,6 @@ struct Obstacle {
     float x;
 };
 vector<coin> coins;
-
-int currentCoin = 0;
 pit ObstaclePit;
 Obstacle obstacle;
 
@@ -140,37 +140,37 @@ void initRandoms() {
     uniform_real_distribution<double> distrPositionX(100, 900);
     ObstaclePit.x = distrPositionX(generator);
     obstacle.x = distrPositionX(generator);
-    if (abs(ObstaclePit.x - obstacle.x) < 100) {
+    if (abs(ObstaclePit.x - obstacle.x)<100) {
         obstacle.x += 100;
     }
 
 }
 void updateCoins(int value) {
-    for (auto& coin : coins) {
-        coin.x = coin.x - 1.0;
-
+    for (auto & coin : coins) {
+        coin.x = coin.x -1.0;
+      
     }
     ObstaclePit.x = ObstaclePit.x - 1;
     obstacle.x -= 1;
-    glutTimerFunc(1000, updateCoins, 1);
+    glutTimerFunc(10000, updateCoins, 0);
 }
 void reDrawCoin(int value) {
     random_device rand_dev;
     mt19937 generator(rand_dev());
-    uniform_real_distribution<double> distrPositionX(20, 70);
+    uniform_real_distribution<double> distrPositionX(20,70);
     uniform_real_distribution<double> distrPositionY(180.0, 500.0);
     coin tempCoin;
-    tempCoin.x = 900.0 + distrPositionX(generator);
+    tempCoin.x = 900.0+ distrPositionX(generator);
     tempCoin.y = distrPositionY(generator);
     coins[value] = tempCoin;
-
+    
 
 }
 void reDrawObstaclePit() {
     random_device rand_dev;
     mt19937 generator(rand_dev());
     uniform_real_distribution<double> distrPositionX(100, 600);
-    ObstaclePit.x = 900 + distrPositionX(generator);
+    ObstaclePit.x =900+ distrPositionX(generator);
 
 }
 void reDrawObstacle() {
@@ -183,10 +183,10 @@ void reDrawObstacle() {
 void checkCoinPositions() {
     //coin current = coins.at(currentCoin);
     int i = 0;
-    for (auto& current : coins) {
+    for (auto& current: coins) {
         if (current.x <= 10) {
             reDrawCoin(i);
-
+           
         }
         i++;
     }
@@ -197,23 +197,20 @@ void checkCoinPositions() {
         reDrawObstacle();
     }
 }
-
 void checkIfPlayerDied() {
     printf(" obstacle pit %f", ObstaclePit.x);
-    if (lrIndex == 0 && ObstaclePit.x < 103 && ObstaclePit.x>10) {
+    if (upDownMovement==0 && ObstaclePit.x <103 && ObstaclePit.x>10) {
         std::cout << "fell into a ditch";
-        gv = 1;
+       gameOverFlag = 1;
+        start = 0;
 
     }
-    if (lrIndex == 0 && obstacle.x < 103 && obstacle.x>10) {
+    if (upDownMovement == 0 && obstacle.x < 103 && obstacle.x>10) {
         std::cout << "hit by a wall";
-        gv = 1;
+       // gv = 1;
     }
 }
 
-void checkObstaclePosition() {
-
-}
 
 
 
@@ -249,34 +246,23 @@ void drawCircle(GLfloat x, GLfloat y, GLfloat radius)
     }
     glEnd();
 }
-
-
-void startGame() {
+//score displayer
+void displayScore() {
 
 
     //Print Score
     char buffer[50];
-    //sprintf_s(buffer, "SCORE: %d", score);
-    glColor3ub(0, 0, 0);
-    renderBitmapString(0, 95, (void*)font3, buffer);
+    sprintf_s(buffer, "SCORE: %d", score);
+    glColor3f(0.000, 1.000, 0.000);
+    renderBitmapString(20, 70, (void*)font3, buffer);
+
     //Coins count
     char buffer1[50];
-    //sprintf_s(buffer1, "COINS: %d", FPS);
-    glColor3ub(0, 0, 0);
-    renderBitmapString(90, 95, (void*)font3, buffer1);
+    sprintf_s(buffer1, "COINS: %d", FPS);
+    glColor3f(0, 1.0, 0);
+    renderBitmapString(20, 55, (void*)font3, buffer1);
     //Level Print
-    if (score % 500 == 0) {
-        int last = score / 50;
-        if (last != level) {
-            level = score / 50;
-            FPS = FPS + 2;
-
-        }
-    }
-    char level_buffer[50];
-    //sprintf_s(level_buffer, "LEVEL: %d", level);
-    glColor3ub(0, 0, 0);
-    renderBitmapString(90, 90, (void*)font3, level_buffer);
+   
 
 }
 
@@ -321,9 +307,7 @@ void Sky()
 }
 
 
-float cdxp1 = 0.0;
-float cdxp2 = 0.0;
-float cdxp3 = 0.0;
+
 
 //Clouds
 void Cloud()
@@ -408,7 +392,7 @@ void CloudAndRainMove(int value)
         {
             cdxp1 = 0.0;
         }
-        cout << "Width: " << width << endl;
+      //  cout << "Width: " << width << endl;
     }
     if (width2 > -1614)
     {
@@ -433,7 +417,7 @@ void CloudAndRainMove(int value)
             p1syp += 0.001;
             glutPostRedisplay();
         }
-        cout << "Width2: " << p1xp << endl;
+      //  cout << "Width2: " << p1xp << endl;
     }
 
     glutTimerFunc(0, CloudAndRainMove, 25);
@@ -465,7 +449,7 @@ void flashScreen() {
 
 
     //Text display in the flash screen after hitting an obstacle
-    if (gv == 1) {
+    if (gameOverFlag == 1) {
         glColor3f(1.000, 0.000, 0.000);
         renderBitmapString(35, 70, (void*)font1, "GAME OVER!");
         glColor3f(1.000, 0.000, 0.000);
@@ -476,7 +460,7 @@ void flashScreen() {
 
     //Title
     glColor3ub(0, 0, 0);
-    renderBitmapString(45, 55, (void*)font1, "KIPCHOGAME");
+    renderBitmapString(450, 300, (void*)font1, "KIPCHOGAME");
 
     //controls
     glColor3ub(0, 0, 0);
@@ -486,7 +470,7 @@ void flashScreen() {
 
     glColor3ub(255, 255, 255);
     renderBitmapString(30, 41, (void*)font3, "Press UP to increase Speed");
-    renderBitmapString(30, 38, (void*)font3, "Press DOWN to decrease Speed");
+    renderBitmapString(30, 38, (void*)font3, "Press DOwN to decrease Speed");
     renderBitmapString(30, 35, (void*)font3, "Press RIGHT to turn Right");
     renderBitmapString(30, 32, (void*)font3, "Press LEFT to turn Left");
 
@@ -505,14 +489,12 @@ void processKeys(unsigned char key, int x, int y) {
     case ' ':
         if (start == 0) {
             start = 1;
-            gv = 0;
+            gameOverFlag = 0;
             FPS = 50;
-            lrIndex = 0;
-            lrIndex1 = 0;
-            lrIndex2 = 0;
-            lrIndex3 = 0;
+            upDownMovement = 0;
+    
             score = 0;
-            level = 0;
+            
         }
         break;
 
@@ -543,10 +525,10 @@ void DrawfullCircle(float cx, float cy, float r, int num_segments) {
 
     glBegin(GL_POLYGON);
     for (int ii = 0; ii < num_segments; ii++) {
-        float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle 
-        float x = r * cosf(theta);//calculate the x component 
-        float y = r * sinf(theta);//calculate the y component 
-        glVertex2f(x + cx, y + cy);//output vertex 
+        float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle
+        float x = r * cosf(theta);//calculate the x component
+        float y = r * sinf(theta);//calculate the y component
+        glVertex2f(x + cx, y + cy);//output vertex
     }
     glEnd();
 }
@@ -555,72 +537,72 @@ void Character() {
 
     glTranslatef(10, 0, 0);
     glColor3ub(255, 140, 0);
-    DrawfullCircle(19.0f, lrIndex + 295.0f, 5.0f, 10);
-    DrawfullCircle(17.0f, lrIndex + 318.0f, 7.0f, 10);
-    DrawfullCircle(15.0f, lrIndex + 315.0f, 6.0f, 10);
-    DrawfullCircle(14.0f, lrIndex + 310.0f, 5.0f, 10);
-    DrawfullCircle(23.0f, lrIndex + 305.0f, 6.0f, 10);
-    DrawfullCircle(20.0f, lrIndex + 300.0f, 5.0f, 10);
-    DrawfullCircle(23.0f, lrIndex + 310.0f, 8.0f, 10);
-    DrawfullCircle(20.0f, lrIndex + 312.0f, 7.0f, 10);
-    //head 
+    DrawfullCircle(19.0f, upDownMovement + 295.0f, 5.0f, 10);
+    DrawfullCircle(17.0f, upDownMovement + 318.0f, 7.0f, 10);
+    DrawfullCircle(15.0f, upDownMovement + 315.0f, 6.0f, 10);
+    DrawfullCircle(14.0f, upDownMovement + 310.0f, 5.0f, 10);
+    DrawfullCircle(23.0f, upDownMovement + 305.0f, 6.0f, 10);
+    DrawfullCircle(20.0f, upDownMovement + 300.0f, 5.0f, 10);
+    DrawfullCircle(23.0f, upDownMovement + 310.0f, 8.0f, 10);
+    DrawfullCircle(20.0f, upDownMovement + 312.0f, 7.0f, 10);
+    //head
     glColor3f(0.9, 0.7, 0.6);
     glBegin(GL_POLYGON);
-    glVertex2f(50, lrIndex + 255);
-    glVertex2f(20, lrIndex + 310);
-    glVertex2f(120, lrIndex + 280);
+    glVertex2f(50, upDownMovement + 255);
+    glVertex2f(20, upDownMovement + 310);
+    glVertex2f(120, upDownMovement + 280);
     glEnd();
     //eyes
     glColor3f(1.0, 1.0, 1.0);
-    DrawfullCircle(75, lrIndex + 290, 15, 20);
+    DrawfullCircle(75, upDownMovement + 290, 15, 20);
     glColor3f(0.0, 0.0, 0.0);
-    DrawfullCircle(83, lrIndex + 292, 6, 20);
-
+    DrawfullCircle(83, upDownMovement + 292, 6, 20);
+    
     //shirt stripes
     glColor3f(1.0f, 0.5f, 0.0f);
     glBegin(GL_POLYGON);
-    glVertex2f(10, lrIndex + 260);
-    glVertex2f(105, lrIndex + 260);
-    glVertex2f(105, lrIndex + 255);
-    glVertex2f(10, lrIndex + 255);
+    glVertex2f(10, upDownMovement + 260);
+    glVertex2f(105, upDownMovement + 260);
+    glVertex2f(105, upDownMovement + 255);
+    glVertex2f(10, upDownMovement + 255);
     glEnd();
 
     glColor3f(0.0f, 0.08f, 0.1f);
     glBegin(GL_POLYGON);
-    glVertex2f(10, lrIndex + 255);
-    glVertex2f(105, lrIndex + 255);
-    glVertex2f(105, lrIndex + 250);
-    glVertex2f(10, lrIndex + 250);
+    glVertex2f(10, upDownMovement + 255);
+    glVertex2f(105, upDownMovement + 255);
+    glVertex2f(105, upDownMovement + 250);
+    glVertex2f(10, upDownMovement + 250);
     glEnd();
     glColor3f(1.0f, 0.5f, 0.0f);
     glBegin(GL_POLYGON);
-    glVertex2f(10, lrIndex + 250);
-    glVertex2f(105, lrIndex + 250);
-    glVertex2f(105, lrIndex + 245);
-    glVertex2f(10, lrIndex + 245);
+    glVertex2f(10, upDownMovement + 250);
+    glVertex2f(105, upDownMovement + 250);
+    glVertex2f(105, upDownMovement + 245);
+    glVertex2f(10, upDownMovement + 245);
     glEnd();
     glColor3f(0.0f, 0.08f, 0.1f);
     glBegin(GL_POLYGON);
-    glVertex2f(10, lrIndex + 245);
-    glVertex2f(105, lrIndex + 245);
-    glVertex2f(105, lrIndex + 240);
-    glVertex2f(10, lrIndex + 240);
+    glVertex2f(10, upDownMovement + 245);
+    glVertex2f(105, upDownMovement + 245);
+    glVertex2f(105, upDownMovement + 240);
+    glVertex2f(10, upDownMovement + 240);
     glEnd();
 
     glColor3f(1.0f, 0.5f, 0.0f);
     glBegin(GL_POLYGON);
-    glVertex2f(10, lrIndex + 240);
-    glVertex2f(105, lrIndex + 240);
-    glVertex2f(105, lrIndex + 235);
-    glVertex2f(10, lrIndex + 235);
+    glVertex2f(10, upDownMovement + 240);
+    glVertex2f(105, upDownMovement + 240);
+    glVertex2f(105, upDownMovement + 235);
+    glVertex2f(10, upDownMovement + 235);
     glEnd();
 
     glColor3f(0.0f, 0.08f, 0.1f);
     glBegin(GL_POLYGON);
-    glVertex2f(10, lrIndex + 235);
-    glVertex2f(105, lrIndex + 235);
-    glVertex2f(105, lrIndex + 230);
-    glVertex2f(10, lrIndex + 230);
+    glVertex2f(10, upDownMovement + 235);
+    glVertex2f(105, upDownMovement + 235);
+    glVertex2f(105, upDownMovement + 230);
+    glVertex2f(10, upDownMovement + 230);
     glEnd();
 
     // left short
@@ -635,54 +617,54 @@ void Character() {
      }
      */
     glBegin(GL_POLYGON);
-    glVertex2f(35, lrIndex + 230);
-    glVertex2f(50, lrIndex + 230);
-    glVertex2f(50, lrIndex + 210);
-    glVertex2f(35, lrIndex + 210);
+    glVertex2f(35, upDownMovement + 230);
+    glVertex2f(50, upDownMovement + 230);
+    glVertex2f(50, upDownMovement + 210);
+    glVertex2f(35, upDownMovement + 210);
     glEnd();
     glPopMatrix();
     glColor3f(0.07, 0.4, 0.7);
     //right short
     glBegin(GL_POLYGON);
-    glVertex2f(70, lrIndex + 230);
-    glVertex2f(85, lrIndex + 230);
-    glVertex2f(85, lrIndex + 210);
-    glVertex2f(70, lrIndex + 210);
+    glVertex2f(70, upDownMovement + 230);
+    glVertex2f(85, upDownMovement + 230);
+    glVertex2f(85, upDownMovement + 210);
+    glVertex2f(70, upDownMovement + 210);
     glEnd();
     //left leg
     glColor3f(0.9, 0.7, 0.6);
     glBegin(GL_POLYGON);
-    glVertex2f(35, lrIndex + 210);
-    glVertex2f(50, lrIndex + 210);
-    glVertex2f(50, lrIndex + 190);
-    glVertex2f(35, lrIndex + 190);
+    glVertex2f(35, upDownMovement + 210);
+    glVertex2f(50, upDownMovement + 210);
+    glVertex2f(50, upDownMovement + 190);
+    glVertex2f(35, upDownMovement + 190);
     glEnd();
     //right leg
 
     glColor3f(0.9, 0.7, 0.6);
 
     glBegin(GL_POLYGON);
-    glVertex2f(70, lrIndex + 210);
-    glVertex2f(85, lrIndex + 210);
-    glVertex2f(85, lrIndex + 190);
-    glVertex2f(70, lrIndex + 190);
+    glVertex2f(70, upDownMovement + 210);
+    glVertex2f(85, upDownMovement + 210);
+    glVertex2f(85, upDownMovement + 190);
+    glVertex2f(70, upDownMovement + 190);
     glEnd();
     glColor3f(1, 1, 1);
     // left shoe
     glBegin(GL_POLYGON);
-    glVertex2f(35, lrIndex + 180);
-    glVertex2f(50, lrIndex + 180);
-    glVertex2f(50, lrIndex + 190);
-    glVertex2f(35, lrIndex + 190);
+    glVertex2f(35, upDownMovement + 180);
+    glVertex2f(50, upDownMovement + 180);
+    glVertex2f(50, upDownMovement + 190);
+    glVertex2f(35, upDownMovement + 190);
     glEnd();
 
     glColor3f(1, 1, 1);
 
     glBegin(GL_POLYGON);
-    glVertex2f(70, lrIndex + 180);
-    glVertex2f(85, lrIndex + 180);
-    glVertex2f(85, lrIndex + 190);
-    glVertex2f(70, lrIndex + 190);
+    glVertex2f(70, upDownMovement + 180);
+    glVertex2f(85, upDownMovement + 180);
+    glVertex2f(85, upDownMovement + 190);
+    glVertex2f(70, upDownMovement + 190);
     glEnd();
 }
 void obstaclePit() {
@@ -690,26 +672,26 @@ void obstaclePit() {
 
     glColor3ub(135, 206, 250);
     glBegin(GL_POLYGON);
-    glVertex2f(ObstaclePit.x - 90, 180);
+    glVertex2f(ObstaclePit.x-90, 180);
     glVertex2f(ObstaclePit.x, 180);
     glVertex2f(ObstaclePit.x, 90);
-    glVertex2f(ObstaclePit.x - 90, 90);
+    glVertex2f(ObstaclePit.x-90, 90);
     glEnd();
 
-    /* for (auto const& obstaclePit : ) {
-         glColor3ub(255, 255, 255);
-         drawCircle(coin.x, coin.y, 18.0f);
-         glColor3ub(253, 184, 19);
-         drawCircle(coin.x, coin.y, 15.0f);
-     }
-     */
+   /* for (auto const& obstaclePit : ) {
+        glColor3ub(255, 255, 255);
+        drawCircle(coin.x, coin.y, 18.0f);
+        glColor3ub(253, 184, 19);
+        drawCircle(coin.x, coin.y, 15.0f);
+    }
+    */
 }
 
 void obstacleDome() {
     glColor3ub(139, 69, 19);
     glBegin(GL_POLYGON);
     glVertex2f(obstacle.x, 180);
-    glVertex2f(obstacle.x + 100, 180);
+    glVertex2f(obstacle.x+100, 180);
     glVertex2f(obstacle.x + 100, 260);
     glVertex2f(obstacle.x, 260);
     glEnd();
@@ -726,27 +708,28 @@ void Coin() {
         drawCircle(coin.x, coin.y, 18.0f);
         glColor3ub(253, 184, 19);
         drawCircle(coin.x, coin.y, 15.0f);
-    }
-    /*
-    glColor3ub(255, 255, 255);
-    drawCircle(500.0f, 200.0f, 18.0f);
-     drawCircle(600.0f, 400.0f, 18.0f);
-     drawCircle(860.0f, 200.0f, 18.0f);
+        }
+   /*
+   glColor3ub(255, 255, 255);
+   drawCircle(500.0f, 200.0f, 18.0f);
+    drawCircle(600.0f, 400.0f, 18.0f);
+    drawCircle(860.0f, 200.0f, 18.0f);
 
-     glColor3ub(253, 184, 19);
-     drawCircle(500.0f, 200.0f, 15.0f);
-     drawCircle(600.0f, 400.0f, 15.0f);
-     drawCircle(860.0f, 200.0f, 15.0f);
-     */
+    glColor3ub(253, 184, 19);
+    drawCircle(500.0f, 200.0f, 15.0f);
+    drawCircle(600.0f, 400.0f, 15.0f);
+    drawCircle(860.0f, 200.0f, 15.0f);
+    */
     glutPostRedisplay();
 }
 
 //Where the objects are displayed from
 void display() {
+    // jump logic
     int dif = glutGet(GLUT_ELAPSED_TIME) - previousTime;
     if (dif >= 1500) {
-        lrIndex = 0;
-        std::cout << "changed";
+        upDownMovement = 0;
+      //  std::cout << "changed";
     }
 
     glClear(GL_COLOR_BUFFER_BIT);
@@ -756,11 +739,11 @@ void display() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glLoadIdentity();
         gluOrtho2D(0.0, 902.0, 0.0, 684.0);
-        startGame();
+        
 
         CloudAndRainMove(0);
         updateCoins(0);
-
+        
         //draw 2D image        startGame();
         Sky();
         Sun();
@@ -770,8 +753,9 @@ void display() {
         obstaclePit();
         obstacleDome();
         Coin();
-        checkCoinPositions();
-        checkIfPlayerDied();
+       checkCoinPositions();
+       checkIfPlayerDied();
+       displayScore();
 
 
         if (r == 1)
@@ -780,8 +764,8 @@ void display() {
         }
 
     }
-
     else {
+        
         flashScreen();
 
     }
@@ -792,22 +776,18 @@ void display() {
 
 void spe_key(int key, int x, int y) {
     switch (key) {
-    case GLUT_KEY_DOWN:
-        if (FPS > (50 + (level * 2)))
-            FPS = FPS - 2;
-        break;
     case GLUT_KEY_UP:
         FPS = FPS + 2;
-        if (lrIndex == 0) {
-            lrIndex += 50;
+        if (upDownMovement == 0) {
+            upDownMovement += 50;
             previousTime = glutGet(GLUT_ELAPSED_TIME);
         }
-        if (lrIndex == 50 && previousTime != glutGet(GLUT_ELAPSED_TIME));
+        if (upDownMovement == 50 && previousTime != glutGet(GLUT_ELAPSED_TIME));
         {
-            lrIndex += 50;
+            upDownMovement += 50;
         }
         break;
-
+        /*
     case GLUT_KEY_LEFT:
         if (lrIndex >= 0) {
             lrIndex = lrIndex - (FPS / 10);
@@ -815,17 +795,21 @@ void spe_key(int key, int x, int y) {
                 lrIndex = -1;
             }
         }
+        
         break;
 
 
     case GLUT_KEY_RIGHT:
+        
         if (lrIndex <= 44) {
             lrIndex = lrIndex + (FPS / 10);
             if (lrIndex > 44) {
                 lrIndex = 45;
             }
         }
+        
         break;
+        */
 
     default:
         break;
@@ -833,14 +817,14 @@ void spe_key(int key, int x, int y) {
 
 }
 void randomPositioning() {
-    for (auto& coin : coins) {
-        random_device rand_dev;
-        mt19937 generator(rand_dev());
-        uniform_real_distribution<float> distrPositionX(110, 900);
-        uniform_real_distribution<double> distrPositionY(500, 180);
+    for (auto & coin : coins){
+    random_device rand_dev;
+    mt19937 generator(rand_dev());
+    uniform_real_distribution<float> distrPositionX(110, 900);
+    uniform_real_distribution<double> distrPositionY(500, 180);
 
-        coin.x = distrPositionX(generator);
-        coin.y = distrPositionY(generator);
+    coin.x= distrPositionX(generator);
+    coin.y = distrPositionY(generator);
     }
 }
 
@@ -867,7 +851,7 @@ int main(int argc, char* argv[])
     glutSpecialFunc(spe_key);
     glutKeyboardFunc(processKeys);
 
-    glOrtho(0, 100, 0, 100, -1, 1);
+    gluOrtho2D(0.0, 902.0, 0.0, 684.0);
     glClearColor(0.184, 0.310, 0.310, 1);
 
     glutTimerFunc(1000, timer, 0);
@@ -875,3 +859,4 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
