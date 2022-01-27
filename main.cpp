@@ -441,10 +441,10 @@ void flashScreen() {
     //Instructions on controls
     glColor3ub(100, 171, 55);
     glBegin(GL_POLYGON);
-    glVertex2f(28, 50);
-    glVertex2f(78, 50);
-    glVertex2f(78, 30);
-    glVertex2f(28, 30);
+    glVertex2f(330, 300);
+    glVertex2f(550, 300);
+    glVertex2f(550, 170);
+    glVertex2f(330, 170);
     glEnd();
 
 
@@ -454,25 +454,30 @@ void flashScreen() {
         renderBitmapString(35, 70, (void*)font1, "GAME OVER!");
         glColor3f(1.000, 0.000, 0.000);
         char buffer2[50];
-        //sprintf_s(buffer2, "Score: %d", score);
+        sprintf_s(buffer2, "Score: %d", score);
         renderBitmapString(33, 66, (void*)font1, buffer2);
     }
 
     //Title
     glColor3ub(0, 0, 0);
-    renderBitmapString(450, 300, (void*)font1, "KIPCHOGAME");
+    renderBitmapString(350, 430, (void*)font1, "KIPCHOGAME");
 
     //controls
     glColor3ub(0, 0, 0);
     renderBitmapString(30, 47, (void*)font2, "Press SPACE to START");
     renderBitmapString(30, 44, (void*)font2, "Press ESC to Exit");
 
-
+    //controls
+    glColor3ub(0, 0, 0);
+    renderBitmapString(350, 370, (void*)font2, "Press SPACE to START");
+    renderBitmapString(350, 340, (void*)font2, "Press ESC to Exit");
+    renderBitmapString(350, 320, (void*)font2, "Press UP to JUMP");
+        
     glColor3ub(255, 255, 255);
-    renderBitmapString(30, 41, (void*)font3, "Press UP to increase Speed");
-    renderBitmapString(30, 38, (void*)font3, "Press DOwN to decrease Speed");
-    renderBitmapString(30, 35, (void*)font3, "Press RIGHT to turn Right");
-    renderBitmapString(30, 32, (void*)font3, "Press LEFT to turn Left");
+    renderBitmapString(350, 180, (void*)font3, "123172 Mohamed Gudle");
+    renderBitmapString(350, 240, (void*)font3, "120138 Michael Mwangi");
+    renderBitmapString(350, 210, (void*)font3, "123038 Susan Ng'ang'a");
+    renderBitmapString(350, 270, (void*)font3, "GROUP 13");
 
 }
 
