@@ -147,11 +147,11 @@ void initRandoms() {
 }
 void updateCoins(int value) {
     for (auto & coin : coins) {
-        coin.x = coin.x -1.0;
+        coin.x = coin.x - 5.0;
       
     }
-    ObstaclePit.x = ObstaclePit.x - 1;
-    obstacle.x -= 1;
+    ObstaclePit.x = ObstaclePit.x - 5;
+    obstacle.x -= 5;
     glutTimerFunc(10000, updateCoins, 0);
 }
 void reDrawCoin(int value) {
@@ -271,7 +271,8 @@ void displayScore() {
 
     //Print Score
     char buffer[50];
-    sprintf_s(buffer, "SCORE: %d", score);
+    int trueScore = (glutGet(GLUT_ELAPSED_TIME)/1000);
+    sprintf_s(buffer, "SCORE: %d", trueScore);
     glColor3f(0.000, 1.000, 0.000);
     renderBitmapString(20, 70, (void*)font3, buffer);
 
@@ -477,7 +478,7 @@ void flashScreen() {
 
     //controls
     glColor3ub(0, 0, 0);
-    renderBitmapString(350, 370, (void*)font2, "Press SPACE to START");
+    renderBitmapString(350, 370, (void*)font2, "Press 's' to START");
     renderBitmapString(350, 340, (void*)font2, "Press ESC to Exit");
     renderBitmapString(350, 320, (void*)font2, "Press UP to JUMP");
         
@@ -503,7 +504,7 @@ void processKeys(unsigned char key, int x, int y) {
         if (start == 0) {
             start = 1;
             gameOverFlag = 0;
-            FPS = 50;
+            //FPS = 50;
             upDownMovement = 0;
     
             score = 0;
@@ -755,7 +756,7 @@ void display() {
         
 
         CloudAndRainMove(0);
-        updateCoins(0);
+        //updateCoins(0);
         
         //draw 2D image        startGame();
         Sky();
@@ -821,6 +822,7 @@ void randomPositioning() {
 
 
 void timer(int) {
+    updateCoins(0);
     glutPostRedisplay();
     glutTimerFunc(1000 / FPS, timer, 0);
 }
