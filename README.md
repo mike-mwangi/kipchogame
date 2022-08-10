@@ -1,1 +1,2 @@
 # kipchogame
+Kipchogame is a single-player running game that is staged in a 2d graphical world. It is played by using the up keystroke to make the character jump obstacles along the way since the player will be continuously running. A character earns scores by collecting coins and any collectibles along the way for them to unlock new characters and features in the game. Successfully avoiding obstacles allows the character to continue running while colliding with them deducts points from their total score.
